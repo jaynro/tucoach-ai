@@ -1,1 +1,72 @@
-<PASTE FROM 'Github Actions Ci Cd'>
+name: CI/CD for TuCoach AI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Lint Backend
+        run: |
+          pip install flake8
+          flake8 .
+
+      - name: Test Backend (optional)
+        run: |
+          echo "Add test runner here"
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Frontend Dependencies
+        run: npm install
+
+      - name: Lint Frontend
+        run: npm run lint
+
+      - name: Build Frontend
+        run: npm run build
+
+  docker-deploy:
+    needs: [build-backend, build-frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/tucoach-ai-backend .
+          docker push ${{ secrets.DOCKER_USERNAME }}/tucoach-ai-backend
+
