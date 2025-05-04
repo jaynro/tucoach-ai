@@ -1,1 +1,9 @@
-<PASTE FROM 'Requirements Txt'>
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+python-jose
+requests
+openai
+python-multipart
+
