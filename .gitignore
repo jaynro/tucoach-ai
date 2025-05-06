@@ -1,0 +1,14 @@
+
+.terraform/
+.terraform/files/
+.terraform.lock.hcl
+
+.DS_Store
+
+.ruff_cache
+
+.env
+
+.venv
+
+*.egg-info/

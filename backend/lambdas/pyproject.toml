@@ -1,0 +1,88 @@
+
+[project]
+name = "tucoachai-lambdas"
+version = "0.1.0"
+description = "Lambda functions for TuCoachAi application"
+requires-python = ">=3.13"
+dependencies = [
+    "boto3~=1.34.0",
+    "aws-lambda-powertools~=2.32.0",
+    "requests~=2.31.0",
+    "aws-xray-sdk~=2.14.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "isort>=5.12.0",
+    "mypy>=1.0.0",
+    "ruff>=0.3.0",
+    "pip-tools", # Useful for compiling requirements if needed
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "tests"]
+log_cli = "True"
+log_cli_level = "INFO"
+filterwarnings = [
+    "ignore:datetime.datetime.utcnow():DeprecationWarning:botocore.auth",
+    "ignore:datetime.datetime.utcfromtimestamp():DeprecationWarning:dateutil.tz"
+]
+
+[tool.mypy]
+python_version = "3.12"
+namespace_packages = false
+disable_error_code = "call-arg,misc"
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+    "boto3",
+    "boto3.*",
+    "requests",
+    "botocore.*",
+]
+
+[tool.ruff]
+line-length = 120
+exclude = [
+    ".eggs",
+    ".git",
+    ".mypy_cache",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "build",
+    "dist",
+    "site-packages",
+    "venv",
+    "*.ipynb"
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint]
+select = ["PL", "F", "I", "E", "W", "C90"]
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.pylint]
+allow-magic-value-types = ["str", "bytes", "int"]
+max-args = 7
+max-bool-expr = 5
+max-branches = 12
+max-locals = 15
