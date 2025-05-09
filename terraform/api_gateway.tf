@@ -1,7 +1,7 @@
 
 # API Gateway REST API
 resource "aws_api_gateway_rest_api" "backend_api" {
-  name        = "${var.project_name}_API-${var.environment}"
+  name        = "${var.project_name}_REST-${var.environment}"
   description = "Tu Coach AI REST API"
 
   endpoint_configuration {
@@ -9,7 +9,7 @@ resource "aws_api_gateway_rest_api" "backend_api" {
   }
 
   tags = {
-    Name        = "${var.project_name}API"
+    Name        = "${var.project_name}REST"
     Environment = var.environment
     Project     = var.project_name
   }
@@ -18,15 +18,15 @@ resource "aws_api_gateway_rest_api" "backend_api" {
 # API Gateway Deployment
 resource "aws_api_gateway_deployment" "backend_api" {
   depends_on = [
-    aws_api_gateway_integration.chats_integration,
+    aws_api_gateway_integration.interviews_integration,
   ]
 
   rest_api_id = aws_api_gateway_rest_api.backend_api.id
 
   triggers = {
     redeployment = sha1(jsonencode([
-      aws_api_gateway_resource.chats.id,
-      aws_api_gateway_method.post_chats.id,
+      aws_api_gateway_resource.interviews.id,
+      aws_api_gateway_method.post_interview.id,
     ]))
   }
 

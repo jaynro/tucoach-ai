@@ -6,7 +6,7 @@
 locals {
   # Get all resources in the API Gateway
   all_resources = [
-    aws_api_gateway_resource.chats.id,
+    aws_api_gateway_resource.interviews.id,
   ]
 }
 
