@@ -29,12 +29,12 @@ class BaseRecord:
         return result
 
     @classmethod
-    def from_dynamodb_item(cls, item: dict[str, Any]) -> "BaseRecord":
+    def from_dynamodb_item(cls, item: dict[str, Any]) -> "TuCoachAiRecord":
         """Create a model instance from a DynamoDB item."""
         # Filter out any keys that aren't in the dataclass fields
         field_names = {f.name for f in dataclasses.fields(cls)}
         filtered_item = {k: v for k, v in item.items() if k in field_names}
-        return cls(**filtered_item)
+        return cls(**filtered_item)  # type: ignore
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -72,7 +72,6 @@ class InterviewRecord(BaseRecord):
         # Set sort_key if not provided
         if not getattr(self, "sort_key", None):
             self.sort_key = str(self.updated_at)
-
 
 
 # Type alias for all possible record types

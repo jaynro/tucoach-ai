@@ -106,7 +106,7 @@ resource "aws_lambda_function" "interviews_lambda" {
 data "archive_file" "lambda_zip" {
   type        = "zip"
   source_dir  = "${path.module}/../backend/lambdas/src/interviews"
-  output_path = "${path.module}/files/lambda.zip"
+  output_path = "${path.module}/files/lambda_interviews.zip"
 }
 
 # Lambda permission for API Gateway

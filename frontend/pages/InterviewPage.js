@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const InterviewPage = () => {
   const [role, setRole] = useState("backend");
   const [seniority, setSeniority] = useState("junior");
   const [answers, setAnswers] = useState(["", "", ""]);
+  const [interviewId, setInterviewId] = useState("");
+  const [socket, setSocket] = useState(null);
   const [questions, setQuestions] = useState([]);
   const navigate = useNavigate();
 
@@ -21,8 +23,70 @@ const InterviewPage = () => {
       }),
     });
     const data = await response.json();
+    setInterviewId(data.interview_id);
     localStorage.setItem("feedback", JSON.stringify(data));
     navigate("/feedback");
+  };
+
+  // Initialize WebSocket connection
+  useEffect(() => {
+    // Only connect if we have an interview ID
+    if (!interviewId) return;
+
+    // Get WebSocket URL from environment or config
+    const wsUrl = process.env.REACT_APP_WEBSOCKET_URL || "wss://your-api-gateway-url/v1";
+    
+    const ws = new WebSocket(wsUrl);
+    
+    ws.onopen = () => {
+      console.log("Connected to WebSocket");
+    };
+    
+    ws.onmessage = (event) => {
+      const response = JSON.parse(event.data);
+      console.log("Received message:", response);
+      
+      // Handle different message types
+      if (response.type === "response") {
+        // Handle normal response
+      } else if (response.type === "error") {
+        // Handle error
+        console.error("WebSocket error:", response.message);
+      }
+    };
+    
+    ws.onclose = () => {
+      console.log("Disconnected from WebSocket");
+    };
+    
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+    
+    setSocket(ws);
+    
+    // Clean up on unmount
+    return () => {
+      if (ws) {
+        ws.close();
+      }
+    };
+  }, [interviewId]); // Only re-run when interviewId changes
+
+  // Function to send message via WebSocket
+  const sendMessage = (message) => {
+    if (socket && socket.readyState === WebSocket.OPEN && interviewId) {
+      const payload = {
+        action: "message",
+        message: message,
+        interview_id: interviewId,
+        user_id: JSON.parse(localStorage.getItem("user"))?.id // Optional, helps with validation
+      };
+      
+      socket.send(JSON.stringify(payload));
+    } else {
+      console.error("WebSocket not connected or interview ID not available");
+    }
   };
 
   return (
