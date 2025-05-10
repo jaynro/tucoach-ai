@@ -14,3 +14,13 @@ terraform {
 provider "aws" {
   region = var.aws_region
 }
+
+# Get current AWS region and account ID
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
+
+# Retrieve OpenRouter API key from SSM Parameter Store
+data "aws_ssm_parameter" "openrouter_api_key" {
+  name            = "/interviews/openrouter-key"
+  with_decryption = true
+}

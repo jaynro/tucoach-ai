@@ -4,7 +4,12 @@ import os
 
 import boto3
 from boto3.dynamodb.conditions import Key
+from jinja2 import Template
 from models import InterviewRecord
+from pydantic_ai import Agent
+from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.providers.openai import OpenAIProvider
+from utils import get_ssm_parameter
 
 # Configure logging
 logger = logging.getLogger()
@@ -14,6 +19,9 @@ logger.setLevel(logging.INFO)
 dynamodb = boto3.resource("dynamodb")
 connections_table = dynamodb.Table(os.environ.get("DYNAMODB_TABLE", "TuCoachAi-prod"))
 
+OPENROUTER_SECRET_NAME = os.getenv("OPENROUTER_SECRET_NAME", "/interviews/openrouter-key")
+openrouter_api_key = get_ssm_parameter(OPENROUTER_SECRET_NAME)
+
 # Error messages
 INTERVIEW_ID_MISSING_ERROR = "Missing required parameter: interview_id"
 INTERVIEW_NOT_FOUND_ERROR = "Interview not found with the provided interview_id"
@@ -21,7 +29,7 @@ INTERVIEW_NOT_FOUND_ERROR = "Interview not found with the provided interview_id"
 # openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Static prompt templates
-QUESTION_PROMPT_TEMPLATE = "Generate 3 technical interview questions for a {role} {seniority}."
+QUESTION_PROMPT_TEMPLATE = "Generate 3 technical interview questions for a {{role}} {{seniority}}."
 FEEDBACK_PROMPT_TEMPLATE = "Provide feedback for the following answers to interview questions: {qa_pairs}"
 
 
@@ -185,18 +193,36 @@ def handle_message(connection_id, domain_name, stage, event):
         # Continue with the rest of the message processing
         message = body.get("message", "")
 
-        # Process the message (this is where you would integrate with your interview chatbot logic)
-        # For now, we'll just echo the message back with the interview_id
-        response_message = f"Received: {message}"
+        model = OpenAIModel(
+            "qwen/qwen3-0.6b-04-28:free",
+            provider=OpenAIProvider(
+                api_key=openrouter_api_key,
+                base_url="https://openrouter.ai/api/v1",
+            ),
+        )
+        agent = Agent(
+            model,
+            system_prompt=Template(QUESTION_PROMPT_TEMPLATE).render(role=interview.role, seniority=interview.seniority),
+        )
+
+        logger.info("Running agent for message: %s", message)
+        result = agent.run_sync(message)
+        logger.info("Got agent result")
+        response_message = result.output
+
+        logger.info("Usage: %s", result.usage())
 
         # Initialize API client
         api_client = get_api_client(domain_name, stage)
+        logger.info("API client initialized with domain name: %s and stage: %s", domain_name, stage)
 
         # Include interview_id in the response
         response_data = {"message": response_message, "type": "response", "interview_id": interview_id}
 
         # Send response back to the client
+        logger.info("Sending response back to client with id: %s", connection_id)
         api_client.post_to_connection(ConnectionId=connection_id, Data=json.dumps(response_data))
+        logger.info("Response sent")
 
         return {"statusCode": 200, "body": json.dumps({"message": "Message processed", "interview_id": interview_id})}
     except Exception as e:

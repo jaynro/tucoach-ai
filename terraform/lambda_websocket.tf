@@ -5,7 +5,7 @@ resource "aws_lambda_function" "websocket_handler" {
   role          = aws_iam_role.websocket_lambda_role.arn
   handler       = "handler.lambda_handler"
   runtime       = "python3.13"
-  timeout       = 30
+  timeout       = 90
   memory_size   = 256
   layers        = [aws_lambda_layer_version.dependencies_lambda_layer.arn, aws_lambda_layer_version.shared_lambda_layer.arn]
 
@@ -14,8 +14,9 @@ resource "aws_lambda_function" "websocket_handler" {
 
   environment {
     variables = {
-      ENVIRONMENT    = var.environment
-      DYNAMODB_TABLE = aws_dynamodb_table.tucoachai.name
+      ENVIRONMENT            = var.environment
+      DYNAMODB_TABLE         = aws_dynamodb_table.tucoachai.name
+      OPENROUTER_SECRET_NAME = "/interviews/openrouter-key"
     }
   }
 
@@ -80,6 +81,14 @@ resource "aws_iam_policy" "websocket_lambda_policy" {
         ]
         Effect   = "Allow"
         Resource = "${aws_apigatewayv2_api.websocket_api.execution_arn}/*"
+      },
+      {
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/interviews/openrouter-key"
       }
     ]
   })

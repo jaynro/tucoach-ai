@@ -5,10 +5,13 @@ version = "0.1.0"
 description = "Lambda functions for TuCoachAi application"
 requires-python = ">=3.13"
 dependencies = [
-    "boto3~=1.34.0",
+    "boto3~=1.35.0",
     "aws-lambda-powertools~=2.32.0",
-    "requests~=2.31.0",
+    "requests~=2.32.0",
     "aws-xray-sdk~=2.14.0",
+    "pydantic>=2.11.4",
+    "pydantic-ai-slim[openai]>=0.1.10",
+    "jinja2>=3.1.6",
 ]
 
 [dependency-groups]
@@ -87,5 +90,4 @@ max-args = 7
 max-bool-expr = 5
 max-branches = 12
 max-locals = 15
-
 

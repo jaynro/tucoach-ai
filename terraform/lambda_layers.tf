@@ -20,7 +20,8 @@ resource "null_resource" "install_common_dependencies" {
   provisioner "local-exec" {
     command = <<EOT
       mkdir -p ${path.module}/files/dependencies_lambda_layer/python
-      cd ${path.module}/../backend/lambdas && uv pip install . --python 3.13 --system --target ../../terraform/files/dependencies_lambda_layer/python
+      rm -rf ${path.module}/files/dependencies_lambda_layer/python/*
+      cd ${path.module}/../backend/lambdas && uv pip install . --python-platform=linux --python=3.13 --system --target ../../terraform/files/dependencies_lambda_layer/python
     EOT
   }
 }
