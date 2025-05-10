@@ -1,74 +1,112 @@
-# TuCoach AI – Frontend (React)
+# TuCoach AI Frontend
 
-This is the React-based frontend for **TuCoach AI**, which handles user login through AWS Cognito, mock interview setup, and displays AI-generated feedback.
+This is the frontend application for TuCoach AI, a platform that provides AI-powered interview coaching.
 
----
+## Features
 
-## 🧰 Requirements
+- Real-time chat interface with AI interview coach
+- WebSocket communication with backend
+- Responsive design
 
-- Node.js 18+
-- AWS Cognito configuration
-- Backend API (default: http://localhost:8000)
+## Getting Started
 
----
+### Prerequisites
 
-## ⚙️ Setup Instructions
+- Node.js (v14 or later)
+- npm or yarn
 
-### 1. Install dependencies
-```bash
-npm install
+### Installation
+
+1. Clone the repository
+2. Navigate to the frontend directory:
+   ```
+   cd frontend
+   ```
+3. Install dependencies:
+   ```
+   npm install
+   ```
+   or
+   ```
+   yarn install
+   ```
+
+### Development
+
+To start the development server:
+
 ```
-
-### 2. Create an `.env` file
-```env
-REACT_APP_API_URL=http://localhost:8000
-REACT_APP_COGNITO_CLIENT_ID=your-app-client-id
-REACT_APP_COGNITO_DOMAIN=your-domain.auth.us-east-1.amazoncognito.com
-```
-
----
-
-## ▶️ Run the Development Server
-```bash
 npm start
 ```
-Open: [http://localhost:3000](http://localhost:3000)
 
----
+or
 
-## 🔑 Key Routes
-
-- `/login` – Cognito login & token validation
-- `/interview` – Role/seniority input + user answers
-- `/feedback` – AI-powered feedback display
-
----
-
-## 🐳 Docker Usage
-```bash
-docker build -t tucoach-ai-frontend .
-docker run -p 3000:3000 \
-  -e REACT_APP_API_URL=http://localhost:8000 \
-  -e REACT_APP_COGNITO_CLIENT_ID=your-client-id \
-  -e REACT_APP_COGNITO_DOMAIN=your-domain.auth.us-east-1.amazoncognito.com \
-  tucoach-ai-frontend
+```
+yarn start
 ```
 
----
+The application will be available at [http://localhost:3000](http://localhost:3000).
 
-## 📁 Directory Structure
+### Building for Production
+
+To build the application for production:
+
 ```
-frontend/
-├── App.js
-├── pages/
-│   ├── LoginPage.js
-│   ├── InterviewPage.js
-│   └── FeedbackPage.js
-├── .env.example
-├── Dockerfile
-└── README.md
+npm run build
 ```
 
----
+or
 
-See the root `/README.md` for end-to-end deployment, Kubernetes, and CI/CD setup.
+```
+yarn build
+```
+
+This will create a `build` directory with optimized production files.
+
+### Environment Variables
+
+The application uses environment variables for configuration:
+
+- `REACT_APP_WEBSOCKET_URL`: The WebSocket URL for connecting to the backend
+
+For local development, these are set in `.env.development`. For production, they are set in `.env.production`.
+
+## WebSocket Communication
+
+The application communicates with the backend using WebSockets. The WebSocket URL is configured through the `REACT_APP_WEBSOCKET_URL` environment variable.
+
+Messages sent to the WebSocket server should have the following format:
+
+```json
+{
+  "action": "message",
+  "message": "Your message here",
+  "interview_id": "your-interview-id"
+}
+```
+
+Responses from the server will have the following format:
+
+```json
+{
+  "message": "Response message",
+  "type": "response",
+  "interview_id": "your-interview-id"
+}
+```
+
+## Project Structure
+
+- `public/`: Static files
+- `src/`: Source code
+  - `components/`: React components
+  - `hooks/`: Custom React hooks
+  - `App.js`: Main application component
+  - `index.js`: Application entry point
+
+## Learn More
+
+To learn more about the technologies used in this project:
+
+- [React](https://reactjs.org/)
+- [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)

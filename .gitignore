@@ -16,3 +16,5 @@ terraform/files/
 __pycache__/
 
 *.zip
+
+backend/lambdas/build/
