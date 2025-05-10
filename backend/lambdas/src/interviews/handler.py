@@ -37,13 +37,25 @@ CORS_HEADERS = {
 @tracer.capture_method
 def create_interview() -> tuple[dict[str, str], Optional[int]]:  # noqa: PLR0911
     """Creates a new interview in the system"""
+    body = app.current_event.json_body or {}
+    
     try:
         # Generate a new UUID for the interview
         interview_id = str(uuid.uuid4())
         user_id = "anonymous"
+        
+        # Get optional role and seniority from request body
+        role = body.get("role", "backend")
+        seniority = body.get("seniority", "junior")
+        
+        # Validate role and seniority against allowed values
+        allowed_roles = ["backend", "frontend", "devops"]
+        allowed_seniorities = ["junior", "senior", "techlead", "architect"]
+        if role not in allowed_roles or seniority not in allowed_seniorities:
+            return {"message": f"Invalid role or seniority. Allowed roles: {allowed_roles}, allowed seniorities: {allowed_seniorities}"}, 400
 
         # Create an interview record
-        interview = InterviewRecord(user_id=user_id, interview_id=interview_id, role="backend", seniority="junior")
+        interview = InterviewRecord(user_id=user_id, interview_id=interview_id, role=role, seniority=seniority)
 
         # Save to DynamoDB
         table.put_item(Item=interview.to_dynamodb_item())

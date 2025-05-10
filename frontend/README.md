@@ -4,7 +4,8 @@ This is the frontend application for TuCoach AI, a platform that provides AI-pow
 
 ## Features
 
-- Real-time chat interface with AI interview coach
+- Real-time chat interface with AI interview coach 
+- Modern UI with Tailwind CSS
 - WebSocket communication with backend
 - Responsive design
 
@@ -101,12 +102,10 @@ Responses from the server will have the following format:
 - `src/`: Source code
   - `components/`: React components
   - `hooks/`: Custom React hooks
+  - `context/`: React context providers
   - `App.js`: Main application component
   - `index.js`: Application entry point
 
 ## Learn More
 
 To learn more about the technologies used in this project:
-
-- [React](https://reactjs.org/)
-- [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)

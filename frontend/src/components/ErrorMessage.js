@@ -1,5 +1,4 @@
 import React from 'react';
-import './ErrorMessage.css';
 
 /**
  * Component for displaying error messages
@@ -12,13 +11,13 @@ function ErrorMessage({ message, onDismiss }) {
   if (!message) return null;
   
   return (
-    <div className="error-message">
-      <div className="error-content">
-        <span className="error-icon">⚠️</span>
-        <p>{message}</p>
+    <div className="bg-red-50 border border-red-200 rounded p-3 mb-4">
+      <div className="flex items-center">
+        <span className="mr-2 text-xl">⚠️</span>
+        <p className="flex-1 m-0 text-red-700">{message}</p>
         {onDismiss && (
-          <button className="dismiss-button" onClick={onDismiss}>
-            ✕
+          <button className="bg-transparent border-none text-red-700 cursor-pointer text-base px-1" onClick={onDismiss}>
+            ✕ 
           </button>
         )}
       </div>

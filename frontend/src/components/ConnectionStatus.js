@@ -1,5 +1,4 @@
 import React from 'react';
-import './ConnectionStatus.css';
 
 /**
  * Component for displaying WebSocket connection status
@@ -8,7 +7,6 @@ import './ConnectionStatus.css';
  * @returns {JSX.Element} Connection status component
  */
 function ConnectionStatus({ status }) {
-  const statusClass = `connection-status status-${status}`;
   
   let statusText = 'Unknown';
   let statusIcon = '⚪';
@@ -34,12 +32,19 @@ function ConnectionStatus({ status }) {
       break;
   }
   
+  // Determine text color based on status
+  const statusColorClass = {
+    connected: 'text-green-600',
+    connecting: 'text-yellow-600',
+    disconnected: 'text-gray-500',
+    error: 'text-red-600'
+  }[status] || 'text-gray-500';
+  
   return (
-    <div className={statusClass}>
-      <span className="status-icon">{statusIcon}</span>
-      <span className="status-text">{statusText}</span>
+    <div className={`flex items-center ${statusColorClass} font-medium`}>
+      <span className="mr-1">{statusIcon}</span>
+      <span>{statusText}</span>
     </div>
   );
-}
 
 export default ConnectionStatus;

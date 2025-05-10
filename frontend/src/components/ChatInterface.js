@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './ChatInterface.css';
 import Message from './Message';
 import { useWebSocketContext } from '../context/WebSocketContext';
 import ErrorMessage from './ErrorMessage';
@@ -83,46 +82,48 @@ function ChatInterface({ interviewId }) {
   };
 
   return (
-    <div className="chat-interface">
-      <div className="chat-header">
-        <h2>Interview Session</h2>
-        <div className="connection-status">
-          Status: <span className={`status-${connectionStatus}`}>{connectionStatus}</span>
+    <div className="flex flex-col h-[80vh] bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="flex justify-between items-center p-4 bg-secondary-light border-b border-secondary">
+        <h2 className="text-xl font-semibold text-gray-800">Interview Session</h2>
+        <div className="text-sm text-gray-600">
+          Status: <span className={`font-bold ${
+            connectionStatus === 'connected' ? 'text-green-600' : 
+            connectionStatus === 'connecting' ? 'text-yellow-600' : 'text-red-600'
+          }`}>{connectionStatus}</span>
         </div>
       </div>
       
       {error && (
-        <ErrorMessage 
-          message={error} 
-          onDismiss={() => setError(null)} 
-        />
+        <ErrorMessage message={error} onDismiss={() => setError(null)} />
       )}
-      <div className="messages-container">
+      <div className="flex-1 p-5 overflow-y-auto flex flex-col">
         {messages.map((msg, index) => (
           <Message key={index} message={msg} />
         ))}
         {isWaitingForResponse && (
-          <div className="loading-indicator">
+          <div className="flex justify-center items-center p-3">
             <LoadingSpinner size="small" />
           </div>
         )}
-        <div ref={messagesEndRef} />
+        <div ref={messagesEndRef}></div>
       </div>
       
-      <form className="message-input" onSubmit={handleSendMessage}>
+      <form className="flex p-4 border-t border-secondary" onSubmit={handleSendMessage}>
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type your message here..."
           disabled={connectionStatus !== 'connected'}
+          className="flex-1 px-4 py-3 border border-gray-300 rounded-md mr-3 text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100"
         />
         <button 
           type="submit" 
           disabled={!input.trim() || connectionStatus !== 'connected'}
+          className="px-5 py-3 bg-primary hover:bg-primary-dark text-white rounded-md text-base transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           Send
-        </button>
+        </button> 
       </form>
     </div>
   );
