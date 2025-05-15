@@ -13,6 +13,7 @@ class RecordType(str, Enum):
     """Enum for record types in the DynamoDB table."""
 
     INTERVIEW = "INTERVIEW"
+    CHAT_HISTORY = "CHAT_HISTORY"
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -74,5 +75,34 @@ class InterviewRecord(BaseRecord):
             self.sort_key = str(self.updated_at)
 
 
+@dataclasses.dataclass(kw_only=True)
+class ChatHistoryRecord(BaseRecord):
+    """Model for chat history records in DynamoDB."""
+
+    interview_id: str
+    timestamp: int = dataclasses.field(default_factory=lambda: int(datetime.now().timestamp() * 1000))
+    pydantic_ai_history: str
+    record_type: RecordType = dataclasses.field(default=RecordType.CHAT_HISTORY)
+    partition_key: str = field(init=False)
+    sort_key: str = field(init=False)
+
+    def __init__(self, **kwargs: dict[str, Any]):
+        super().__init__()
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+        # Set timestamp if not provided
+        if not getattr(self, "timestamp", None):
+            self.timestamp = int(datetime.now().timestamp() * 1000)
+
+        # Set partition_key if not provided
+        if not getattr(self, "partition_key", None):
+            self.partition_key = f"CHAT_HISTORY#{self.interview_id}"
+
+        # Set sort_key if not provided
+        if not getattr(self, "sort_key", None):
+            self.sort_key = f"TIMESTAMP#{self.timestamp}"
+
+
 # Type alias for all possible record types
-TuCoachAiRecord = Union[InterviewRecord,]
+TuCoachAiRecord = Union[InterviewRecord, ChatHistoryRecord,]

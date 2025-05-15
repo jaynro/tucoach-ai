@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 
 function Message({ message }) {
   const { text, sender, type } = message;
@@ -19,7 +20,13 @@ function Message({ message }) {
   return (
     <div className={messageContainerClasses}>
       <div className={messageContentClasses}>
-        {text} 
+        {sender === 'user' ? (
+          text
+        ) : (
+          <ReactMarkdown className="markdown-content">
+            {text}
+          </ReactMarkdown>
+        )}
       </div>
     </div>
   );

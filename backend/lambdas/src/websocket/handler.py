@@ -5,8 +5,9 @@ import os
 import boto3
 from boto3.dynamodb.conditions import Key
 from jinja2 import Template
-from models import InterviewRecord
+from models import ChatHistoryRecord, InterviewRecord
 from pydantic_ai import Agent
+from pydantic_ai.messages import ModelMessage, ModelMessagesTypeAdapter
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
 from utils import get_ssm_parameter
@@ -19,6 +20,7 @@ logger.setLevel(logging.INFO)
 dynamodb = boto3.resource("dynamodb")
 connections_table = dynamodb.Table(os.environ.get("DYNAMODB_TABLE", "TuCoachAi-prod"))
 
+AI_MODEL = "google/gemini-2.5-pro-preview-03-25"
 OPENROUTER_SECRET_NAME = os.getenv("OPENROUTER_SECRET_NAME", "/interviews/openrouter-key")
 openrouter_api_key = get_ssm_parameter(OPENROUTER_SECRET_NAME)
 
@@ -29,7 +31,25 @@ INTERVIEW_NOT_FOUND_ERROR = "Interview not found with the provided interview_id"
 # openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Static prompt templates
-QUESTION_PROMPT_TEMPLATE = "Generate 3 technical interview questions for a {{role}} {{seniority}}."
+QUESTION_PROMPT_TEMPLATE = """
+## Context
+You are a senior software engineer that is performing a mock interview for a candidate, so that they can train and improve their skills for a real interview.
+
+## Job description
+- Role: {{role}}
+- Seniority: {{seniority}}
+- Mandatory tech stack: java, sql, spring framework
+
+## Interview structure
+- Start by asking questions about the candidate's background and experience.
+- Continue asking questions about mandatory skills, adjust difficulty as needed.
+- Next, ask questions about optional skills.
+- Think if the candidate passed or not passed the interview.
+- At the end, present a summary to the candidate with your final assessment and all feedback and recommendations.
+
+## Guidelines
+- Ask only one question at a time.
+"""  # noqa: E501
 FEEDBACK_PROMPT_TEMPLATE = "Provide feedback for the following answers to interview questions: {qa_pairs}"
 
 
@@ -59,7 +79,7 @@ def get_interview(interview_id: str, user_id=None) -> InterviewRecord:
         logger.info(f"Found {len(items)} items for specific user_id and interview_id")
         if len(items) == 0:
             raise ValueError(INTERVIEW_NOT_FOUND_ERROR)
-        return InterviewRecord.from_dynamodb_item(items[0])
+        return InterviewRecord.from_dynamodb_item(items[0])  # type: ignore
     except Exception as e:
         logger.error(f"Error validating interview_id: {str(e)}")
         raise ValueError(f"Error validating interview_id: {str(e)}")
@@ -158,6 +178,48 @@ def handle_disconnect(connection_id):
         return {"statusCode": 500, "body": "Failed to disconnect"}
 
 
+def get_chat_history(interview_id: str) -> list[ModelMessage]:
+    """
+    Retrieve chat history for an interview from DynamoDB.
+
+    Args:
+        interview_id (str): The interview ID to get history for
+
+    Returns:
+        list[ModelMessage]: List of ModelMessage objects representing the chat history
+    """
+    try:
+        logger.info("Retrieving chat history for interview_id: %s", interview_id)
+        partition_key = f"CHAT_HISTORY#{interview_id}"
+
+        # Query DynamoDB for chat history records
+        response = connections_table.query(
+            KeyConditionExpression=Key("partition_key").eq(partition_key),
+            ScanIndexForward=True,  # Sort by timestamp in ascending order
+        )
+
+        items = response.get("Items", [])
+        logger.info("Found %s chat history items for interview_id: %s", len(items), interview_id)
+
+        if not items:
+            return []
+
+        # Parse the chat history strings into pydantic-ai compatible models
+        all_messages = []
+        for item in items:
+            history_str = item.get("pydantic_ai_history")
+            if history_str:
+                # Parse the JSON string into ModelMessage objects
+                messages = ModelMessagesTypeAdapter.validate_json(history_str)
+                all_messages.extend(messages)
+
+        logger.info("Parsed %s messages from chat history", len(all_messages))
+        return all_messages
+    except Exception as e:
+        logger.error("Error retrieving chat history: %s", str(e), exc_info=True)
+        return []
+
+
 def handle_message(connection_id, domain_name, stage, event):
     """
     Handle WebSocket 'message' event.
@@ -194,19 +256,29 @@ def handle_message(connection_id, domain_name, stage, event):
         message = body.get("message", "")
 
         model = OpenAIModel(
-            "qwen/qwen3-0.6b-04-28:free",
+            AI_MODEL,
             provider=OpenAIProvider(
                 api_key=openrouter_api_key,
                 base_url="https://openrouter.ai/api/v1",
             ),
         )
+
+        # Load chat history from DynamoDB
+        message_history = get_chat_history(interview_id)
+
         agent = Agent(
             model,
             system_prompt=Template(QUESTION_PROMPT_TEMPLATE).render(role=interview.role, seniority=interview.seniority),
         )
 
         logger.info("Running agent for message: %s", message)
-        result = agent.run_sync(message)
+        if message_history:
+            logger.info(f"Using existing chat history with {len(message_history)} messages")
+            result = agent.run_sync(message, message_history=message_history)
+        else:
+            logger.info("No existing chat history found, starting new conversation")
+            result = agent.run_sync(message)
+
         logger.info("Got agent result")
         response_message = result.output
 
@@ -223,6 +295,16 @@ def handle_message(connection_id, domain_name, stage, event):
         logger.info("Sending response back to client with id: %s", connection_id)
         api_client.post_to_connection(ConnectionId=connection_id, Data=json.dumps(response_data))
         logger.info("Response sent")
+
+        # Save the chat history to DynamoDB
+        try:
+            new_messages = result.new_messages_json()
+            messages_json = new_messages.decode("utf-8")
+            chat_history = ChatHistoryRecord(interview_id=interview_id, pydantic_ai_history=messages_json)
+            connections_table.put_item(Item=chat_history.to_dynamodb_item())
+            logger.info("Saved chat history to DynamoDB for interview_id: %s", interview_id)
+        except Exception as e:
+            logger.error("Error saving chat history: %s", str(e), exc_info=True)
 
         return {"statusCode": 200, "body": json.dumps({"message": "Message processed", "interview_id": interview_id})}
     except Exception as e:

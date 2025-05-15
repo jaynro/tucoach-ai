@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import ChatInterface from './components/ChatInterface';
 import Header from './components/Header';
+import LoadingSpinner from './components/LoadingSpinner';
 import { WebSocketProvider } from './context/WebSocketContext';
 import { getInterviewId, storeInterviewId } from './utils/storage';
-
+import { createInterview } from './services/ApiService';
 function App() {
   const [interviewId, setInterviewId] = useState(() => getInterviewId() || '');
   const [isInterviewStarted, setIsInterviewStarted] = useState(false);
@@ -15,10 +16,28 @@ function App() {
     }
   }, [interviewId]);
 
-  const startInterview = (id) => {
-    setInterviewId(id);
-    setIsInterviewStarted(true);
-    storeInterviewId(id);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const startInterview = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // Create a new interview via API
+      const response = await createInterview();
+      
+      // Use the interview ID from the response
+      const newInterviewId = response.interview_id;
+      setInterviewId(newInterviewId);
+      setIsInterviewStarted(true);
+      storeInterviewId(newInterviewId);
+    } catch (err) {
+      setError('Failed to create interview. Please try again.');
+      console.error('Error starting interview:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -29,20 +48,26 @@ function App() {
           {!isInterviewStarted ? (
             <div className="flex flex-col items-center justify-center mt-24 text-center">
               <h2 className="text-4xl mb-2 text-gray-800 font-bold">Welcome to TuCoach AI</h2>
-              <p className="text-xl mb-8 text-gray-600">Your AI-powered interview coach</p>
+              <p className="text-xl mb-6 text-gray-600">Your AI-powered interview coach</p>
+              
+              {error && (
+                <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+                  {error}
+                </div>
+              )}
+              
               <div className="flex flex-col w-full max-w-md">
-                <input
-                  type="text"
-                  placeholder="Enter interview ID"
-                  value={interviewId}
-                  onChange={(e) => setInterviewId(e.target.value)}
-                  className="px-4 py-3 text-base border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-                <button onClick={() => startInterview(interviewId)}
-                  disabled={!interviewId.trim()}
+                <button 
+                  onClick={startInterview}
+                  disabled={isLoading}
                   className="px-5 py-3 bg-primary hover:bg-primary-dark text-white rounded-md text-base transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
-                  Start Interview
+                  {isLoading ? (
+                    <div className="flex items-center justify-center">
+                      <LoadingSpinner size="small" />
+                      <span className="ml-2">Creating Interview...</span>
+                    </div>
+                  ) : 'Start Interview'}
                 </button>
               </div>
             </div>
