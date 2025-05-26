@@ -4,6 +4,8 @@ import { useWebSocketContext } from '../context/WebSocketContext';
 import ErrorMessage from './ErrorMessage';
 import { createMessage } from '../utils/websocket';
 import LoadingSpinner from './LoadingSpinner';
+// Import Microphone and Stop icons
+import { MicrophoneIcon, StopIcon } from '@heroicons/react/24/solid';
 
 function ChatInterface({ interviewId }) {
   const [input, setInput] = useState('');
@@ -11,6 +13,11 @@ function ChatInterface({ interviewId }) {
   const [error, setError] = useState(null);
   const [isWaitingForResponse, setIsWaitingForResponse] = useState(false);
   const messagesEndRef = useRef(null);
+  
+  // New state variables for speech recognition
+  const [isRecording, setIsRecording] = useState(false);
+  const [speechApiSupported, setSpeechApiSupported] = useState(false);
+  const recognitionRef = useRef(null);
   
   const { sendMessage, lastMessage, connectionStatus, error: wsError } = useWebSocketContext();
 
@@ -26,6 +33,52 @@ function ChatInterface({ interviewId }) {
       setError(wsError);
     }
   }, [wsError]);
+
+  // Initialize SpeechRecognition
+  useEffect(() => {
+    const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognitionAPI) {
+      setSpeechApiSupported(true);
+      const recognitionInstance = new SpeechRecognitionAPI();
+      recognitionInstance.continuous = false;
+      recognitionInstance.interimResults = false;
+      recognitionInstance.lang = 'en-US';
+
+      recognitionInstance.onresult = (event) => {
+        const transcript = event.results[event.results.length - 1][0].transcript;
+        setInput(prevInput => prevInput + (prevInput.length > 0 && prevInput.slice(-1) !== ' ' ? ' ' : '') + transcript + ' ');
+        setIsRecording(false);
+      };
+
+      recognitionInstance.onerror = (event) => {
+        console.error("Speech recognition error", event.error);
+        let errorMessage = `Speech recognition error: ${event.error}.`;
+        if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+            errorMessage = "Microphone access denied. Please enable microphone permissions in your browser settings.";
+        } else if (event.error === 'no-speech') {
+            errorMessage = "No speech was detected. Please try again.";
+        }
+        setError(errorMessage);
+        setIsRecording(false);
+      };
+
+      recognitionInstance.onend = () => {
+        // Ensure recording state is reset if stopped for other reasons (e.g. silence timeout)
+        setIsRecording(false);
+      };
+      
+      recognitionRef.current = recognitionInstance;
+    } else {
+      setSpeechApiSupported(false);
+      console.warn("Speech recognition not supported in this browser.");
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+    };
+  }, []); // Empty dependency array ensures this runs once on mount
 
   // Handle incoming messages
   useEffect(() => {
@@ -60,6 +113,29 @@ function ChatInterface({ interviewId }) {
       }
     ]);
   }, []);
+
+  const handleToggleRecording = () => {
+    if (!speechApiSupported) {
+      setError("Speech recognition is not supported in this browser.");
+      return;
+    }
+    if (recognitionRef.current) {
+      if (isRecording) {
+        recognitionRef.current.stop();
+        // setIsRecording(false); // onend or onresult will handle this
+      } else {
+        setError(null); // Clear previous errors before starting new recording
+        try {
+            recognitionRef.current.start();
+            setIsRecording(true);
+        } catch (e) {
+            console.error("Error starting speech recognition:", e);
+            setError("Could not start voice recording. Please ensure microphone permissions are granted.");
+            setIsRecording(false);
+        }
+      }
+    }
+  };
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -96,6 +172,11 @@ function ChatInterface({ interviewId }) {
       {error && (
         <ErrorMessage message={error} onDismiss={() => setError(null)} />
       )}
+      {!speechApiSupported && connectionStatus === 'connected' && (
+        <div className="p-2 bg-yellow-100 text-yellow-700 text-sm text-center">
+          Speech recognition is not supported in this browser. Please type your responses.
+        </div>
+      )}
       <div className="flex-1 p-5 overflow-y-auto flex flex-col">
         {messages.map((msg, index) => (
           <Message key={index} message={msg} />
@@ -108,18 +189,33 @@ function ChatInterface({ interviewId }) {
         <div ref={messagesEndRef}></div>
       </div>
       
-      <form className="flex p-4 border-t border-secondary" onSubmit={handleSendMessage}>
+      <form className="flex p-4 border-t border-secondary items-center" onSubmit={handleSendMessage}>
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your message here..."
-          disabled={connectionStatus !== 'connected'}
+          placeholder={isRecording ? "Listening..." : "Type your message here..."}
+          disabled={connectionStatus !== 'connected' || isRecording}
           className="flex-1 px-4 py-3 border border-gray-300 rounded-md mr-3 text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100"
         />
+        {speechApiSupported && (
+          <button
+            type="button"
+            onClick={handleToggleRecording}
+            disabled={connectionStatus !== 'connected'}
+            className={`p-3 rounded-md text-white mr-2 transition-colors ${
+              isRecording
+                ? 'bg-red-500 hover:bg-red-600'
+                : 'bg-blue-500 hover:bg-blue-600'
+            } disabled:bg-gray-300 disabled:cursor-not-allowed`}
+            aria-label={isRecording ? "Stop recording" : "Start recording"}
+          >
+            {isRecording ? <StopIcon className="h-5 w-5" /> : <MicrophoneIcon className="h-5 w-5" />}
+          </button>
+        )}
         <button 
           type="submit" 
-          disabled={!input.trim() || connectionStatus !== 'connected'}
+          disabled={!input.trim() || connectionStatus !== 'connected' || isRecording}
           className="px-5 py-3 bg-primary hover:bg-primary-dark text-white rounded-md text-base transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           Send
