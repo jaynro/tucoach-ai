@@ -15,7 +15,7 @@ from aws_lambda_powertools.event_handler import APIGatewayRestResolver
 from aws_lambda_powertools.utilities.typing import LambdaContext
 from models import InterviewRecord
 
-# Initialize utilities
+# Initialize utilities.
 logger = logging.getLogger(__name__)
 tracer = Tracer()
 app = APIGatewayRestResolver()

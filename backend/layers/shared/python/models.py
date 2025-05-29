@@ -57,7 +57,7 @@ class InterviewRecord(BaseRecord):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-        # Set created_at if not provided
+        # Set created_at if not provided.
         if not getattr(self, "created_at", None):
             self.created_at = int(datetime.now().timestamp() * 1000)
 
