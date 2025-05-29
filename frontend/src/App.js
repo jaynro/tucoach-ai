@@ -11,9 +11,9 @@ function App() {
 
   // Check if we have a stored interview ID
   useEffect(() => {
-    if (interviewId) {
-      setIsInterviewStarted(true);
-    }
+    // if (interviewId) {
+    //   setIsInterviewStarted(true);
+    // }
   }, [interviewId]);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +33,7 @@ function App() {
       setIsInterviewStarted(true);
       storeInterviewId(newInterviewId);
     } catch (err) {
-      setError('Failed to create interview. Please try again.');
+      setError('Error al crear la entrevista. Por favor, inténtalo de nuevo.');
       console.error('Error starting interview:', err);
     } finally {
       setIsLoading(false);
@@ -47,8 +47,8 @@ function App() {
         <main className="flex-1 flex flex-col p-5 max-w-7xl mx-auto w-full">
           {!isInterviewStarted ? (
             <div className="flex flex-col items-center justify-center mt-24 text-center">
-              <h2 className="text-4xl mb-2 text-gray-800 font-bold">Welcome to TuCoach AI</h2>
-              <p className="text-xl mb-6 text-gray-600">Your AI-powered interview coach</p>
+              <h2 className="text-4xl mb-2 text-gray-800 font-bold">Bienvenido a TuCoach AI</h2>
+              <p className="text-xl mb-6 text-gray-600">Tu entrenador de entrevistas con IA</p>
               
               {error && (
                 <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
@@ -65,9 +65,9 @@ function App() {
                   {isLoading ? (
                     <div className="flex items-center justify-center">
                       <LoadingSpinner size="small" />
-                      <span className="ml-2">Creating Interview...</span>
+                      <span className="ml-2">Creando Entrevista...</span>
                     </div>
-                  ) : 'Start Interview'}
+                  ) : 'Iniciar Entrevista'}
                 </button>
               </div>
             </div>

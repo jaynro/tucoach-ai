@@ -8,24 +8,24 @@ import React from 'react';
  */
 function ConnectionStatus({ status }) {
   
-  let statusText = 'Unknown';
+  let statusText = 'Desconocido';
   let statusIcon = '⚪';
   
   switch (status) {
     case 'connected':
-      statusText = 'Connected';
+      statusText = 'Conectado';
       statusIcon = '🟢';
       break;
     case 'connecting':
-      statusText = 'Connecting...';
+      statusText = 'Conectando...';
       statusIcon = '🟡';
       break;
     case 'disconnected':
-      statusText = 'Disconnected';
+      statusText = 'Desconectado';
       statusIcon = '⚪';
       break;
     case 'error':
-      statusText = 'Connection Error';
+      statusText = 'Error de Conexión';
       statusIcon = '🔴';
       break;
     default:

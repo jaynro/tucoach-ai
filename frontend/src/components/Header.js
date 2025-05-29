@@ -9,8 +9,8 @@ function Header() {
         </div>
         <nav>
           <ul className="flex space-x-8">
-            <li><a href="/" className="text-gray-700 font-medium hover:text-primary transition-colors">Home</a></li>
-            <li><a href="/about" className="text-gray-700 font-medium hover:text-primary transition-colors">About</a></li>
+            <li><a href="/" className="text-gray-700 font-medium hover:text-primary transition-colors">Inicio</a></li>
+            <li><a href="/about" className="text-gray-700 font-medium hover:text-primary transition-colors">Acerca de</a></li>
           </ul>
         </nav> 
       </div>

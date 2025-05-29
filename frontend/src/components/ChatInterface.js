@@ -52,11 +52,11 @@ function ChatInterface({ interviewId }) {
 
       recognitionInstance.onerror = (event) => {
         console.error("Speech recognition error", event.error);
-        let errorMessage = `Speech recognition error: ${event.error}.`;
+        let errorMessage = `Error de reconocimiento de voz: ${event.error}.`;
         if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-            errorMessage = "Microphone access denied. Please enable microphone permissions in your browser settings.";
+            errorMessage = "Acceso al micrófono denegado. Por favor, habilita los permisos del micrófono en la configuración de tu navegador.";
         } else if (event.error === 'no-speech') {
-            errorMessage = "No speech was detected. Please try again.";
+            errorMessage = "No se detectó voz. Por favor, inténtalo de nuevo.";
         }
         setError(errorMessage);
         setIsRecording(false);
@@ -70,7 +70,7 @@ function ChatInterface({ interviewId }) {
       recognitionRef.current = recognitionInstance;
     } else {
       setSpeechApiSupported(false);
-      console.warn("Speech recognition not supported in this browser.");
+      console.warn("El reconocimiento de voz no es compatible con este navegador.");
     }
 
     return () => {
@@ -107,7 +107,7 @@ function ChatInterface({ interviewId }) {
   useEffect(() => {
     setMessages([
       {
-        text: 'Welcome to your interview session! I\'m your AI interview coach. How can I help you today?',
+        text: '¡Bienvenido a tu sesión de entrevista! Soy tu entrenador de entrevistas con IA. ¿Cómo puedo ayudarte hoy?',
         sender: 'bot',
         type: 'response'
       }
@@ -116,7 +116,7 @@ function ChatInterface({ interviewId }) {
 
   const handleToggleRecording = () => {
     if (!speechApiSupported) {
-      setError("Speech recognition is not supported in this browser.");
+      setError("El reconocimiento de voz no es compatible con este navegador.");
       return;
     }
     if (recognitionRef.current) {
@@ -130,7 +130,7 @@ function ChatInterface({ interviewId }) {
             setIsRecording(true);
         } catch (e) {
             console.error("Error starting speech recognition:", e);
-            setError("Could not start voice recording. Please ensure microphone permissions are granted.");
+            setError("No se pudo iniciar la grabación de voz. Por favor, asegúrate de que los permisos del micrófono estén concedidos.");
             setIsRecording(false);
         }
       }
@@ -160,12 +160,12 @@ function ChatInterface({ interviewId }) {
   return (
     <div className="flex flex-col h-[80vh] bg-white rounded-lg shadow-md overflow-hidden">
       <div className="flex justify-between items-center p-4 bg-secondary-light border-b border-secondary">
-        <h2 className="text-xl font-semibold text-gray-800">Interview Session</h2>
+        <h2 className="text-xl font-semibold text-gray-800">Sesión de Entrevista</h2>
         <div className="text-sm text-gray-600">
-          Status: <span className={`font-bold ${
+          Estado: <span className={`font-bold ${
             connectionStatus === 'connected' ? 'text-green-600' : 
             connectionStatus === 'connecting' ? 'text-yellow-600' : 'text-red-600'
-          }`}>{connectionStatus}</span>
+          }`}>{connectionStatus === 'connected' ? 'conectado' : connectionStatus === 'connecting' ? 'conectando' : 'desconectado'}</span>
         </div>
       </div>
       
@@ -174,7 +174,7 @@ function ChatInterface({ interviewId }) {
       )}
       {!speechApiSupported && connectionStatus === 'connected' && (
         <div className="p-2 bg-yellow-100 text-yellow-700 text-sm text-center">
-          Speech recognition is not supported in this browser. Please type your responses.
+          El reconocimiento de voz no es compatible con este navegador. Por favor, escribe tus respuestas.
         </div>
       )}
       <div className="flex-1 p-5 overflow-y-auto flex flex-col">
@@ -194,7 +194,7 @@ function ChatInterface({ interviewId }) {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder={isRecording ? "Listening..." : "Type your message here..."}
+          placeholder={isRecording ? "Escuchando..." : "Escribe tu mensaje aquí..."}
           disabled={connectionStatus !== 'connected' || isRecording}
           className="flex-1 px-4 py-3 border border-gray-300 rounded-md mr-3 text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100"
         />
@@ -208,7 +208,7 @@ function ChatInterface({ interviewId }) {
                 ? 'bg-red-500 hover:bg-red-600'
                 : 'bg-blue-500 hover:bg-blue-600'
             } disabled:bg-gray-300 disabled:cursor-not-allowed`}
-            aria-label={isRecording ? "Stop recording" : "Start recording"}
+            aria-label={isRecording ? "Detener grabación" : "Iniciar grabación"}
           >
             {isRecording ? <StopIcon className="h-5 w-5" /> : <MicrophoneIcon className="h-5 w-5" />}
           </button>
@@ -218,7 +218,7 @@ function ChatInterface({ interviewId }) {
           disabled={!input.trim() || connectionStatus !== 'connected' || isRecording}
           className="px-5 py-3 bg-primary hover:bg-primary-dark text-white rounded-md text-base transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
-          Send
+          Enviar
         </button> 
       </form>
     </div>
