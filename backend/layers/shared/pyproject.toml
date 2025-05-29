@@ -20,7 +20,7 @@ dev = [
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
-# Configure setuptools to use modules under `python/` as top-level modules
+# Configure setuptools to use modules under `python/` as top-level modules.
 [tool.setuptools]
 # List individual modules if they're not in packages
 py-modules = ["models", "utils"]
