@@ -27,6 +27,10 @@ resource "aws_s3_bucket_website_configuration" "public_site" {
   index_document {
     suffix = "index.html"
   }
+
+  error_document {
+    key = "index.html"
+  }
 }
 
 # S3 bucket policy to allow public read access
