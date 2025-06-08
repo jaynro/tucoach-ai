@@ -16,6 +16,7 @@ resource "aws_cloudfront_distribution" "website_distribution" {
   is_ipv6_enabled     = true
   default_root_object = "index.html"
   comment             = "TuCoach AI Landing Page Distribution"
+  aliases             = ["interviewmentor.training"]
 
   # Configure caching behavior for the default path
   default_cache_behavior {
@@ -33,27 +34,27 @@ resource "aws_cloudfront_distribution" "website_distribution" {
     }
 
     min_ttl     = 0
-    default_ttl = 3600   # 1 hour
-    max_ttl     = 86400  # 24 hours
+    default_ttl = 3600  # 1 hour
+    max_ttl     = 86400 # 24 hours
   }
 
   # Handle client-side routing for React Router
   custom_error_response {
-    error_code         = 403
-    response_code      = 200
-    response_page_path = "/index.html"
+    error_code            = 403
+    response_code         = 200
+    response_page_path    = "/index.html"
     error_caching_min_ttl = 0
   }
 
   custom_error_response {
-    error_code         = 404
-    response_code      = 200
-    response_page_path = "/index.html"
+    error_code            = 404
+    response_code         = 200
+    response_page_path    = "/index.html"
     error_caching_min_ttl = 0
   }
 
   # Price class for cost optimization
-  price_class = "PriceClass_100"  # Use only North America and Europe edge locations
+  price_class = "PriceClass_100" # Use only North America and Europe edge locations
 
   restrictions {
     geo_restriction {
@@ -68,10 +69,9 @@ resource "aws_cloudfront_distribution" "website_distribution" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
-    # You can add a custom SSL certificate here if you have a custom domain
-    # acm_certificate_arn = "arn:aws:acm:..."
-    # ssl_support_method  = "sni-only"
+    cloudfront_default_certificate = false
+    acm_certificate_arn            = "arn:aws:acm:us-east-1:295070998832:certificate/ad400c3f-bf3b-4537-8da6-24e57786bc27"
+    ssl_support_method             = "sni-only"
   }
 }
 

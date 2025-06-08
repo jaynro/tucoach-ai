@@ -13,10 +13,10 @@ npm run build
 
 # Sync the build folder with the S3 bucket
 # Get the region where the S3 bucket is located
-BUCKET_REGION=$(aws s3api get-bucket-location --bucket tucoachai-website-295070998832 --output text)
+BUCKET_REGION=$(aws s3api get-bucket-location --bucket interviewmentor.training --output text)
 [ "$BUCKET_REGION" = "None" ] && BUCKET_REGION="us-east-2"
 echo "Deploying to S3 bucket..."
-aws s3 sync build/ s3://tucoachai-website-295070998832/ --delete --region $BUCKET_REGION
+aws s3 sync build/ s3://interviewmentor.training/ --delete --region $BUCKET_REGION
 
 # Get CloudFront distribution ID
 echo "Getting CloudFront distribution ID..."

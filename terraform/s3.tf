@@ -1,9 +1,9 @@
 
 resource "aws_s3_bucket" "public_site" {
-  bucket = "tucoachai-website-295070998832"
+  bucket = "interviewmentor.training"
 
   tags = {
-    Name        = "tucoachai-website-295070998832"
+    Name        = "interviewmentor.training"
     Environment = var.environment
     Project     = var.project_name
   }
