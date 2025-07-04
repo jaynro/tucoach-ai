@@ -9,10 +9,10 @@ const LandingPage = () => {
   return (
     <>
       <Helmet>
-        <title>TuCoach AI - Domina entrevistas de programación con IA | Preparación para Entrevistas Técnicas</title>
+        <title>Interview Mentor - Domina entrevistas de programación con IA | Preparación para Entrevistas Técnicas</title>
         <meta name="description" content="Practica simulaciones realistas, recibe feedback instantáneo y análisis personalizado para maximizar tu confianza en entrevistas técnicas." />
         <meta name="keywords" content="entrevistas de trabajo, preparación laboral, IA, recién graduados, México, práctica de entrevistas, entrevistas técnicas" />
-        <meta property="og:title" content="TuCoach AI - Domina entrevistas de programación con IA" />
+        <meta property="og:title" content="Interview Mentor - Domina entrevistas de programación con IA" />
         <meta property="og:description" content="Practica simulaciones realistas, recibe feedback instantáneo y análisis personalizado para maximizar tu confianza" />
         <meta property="og:type" content="website" />
         <meta name="robots" content="index, follow" />
@@ -26,7 +26,7 @@ const LandingPage = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4">
               <div className="flex items-center">
-                <h1 className="text-2xl font-bold text-primary">TuCoach AI</h1>
+                <h1 className="text-2xl font-bold text-primary">Interview Mentor</h1>
               </div>
               <div className="hidden md:flex space-x-8">
                 <a href="#como-funciona" className="text-gray-600 hover:text-primary transition-colors">¿Cómo funciona?</a>
@@ -65,14 +65,14 @@ const LandingPage = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                ¿Por qué elegir TuCoach AI?
+                ¿Por qué elegir Interview Mentor?
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                 La plataforma más completa para dominar entrevistas técnicas de programación
               </p>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               <div className="text-center p-6">
                 <div className="bg-primary-light/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                   <AcademicCapIcon className="w-8 h-8 text-primary" />
@@ -97,21 +97,12 @@ const LandingPage = () => {
                 <div className="bg-primary-light/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                   <ChartBarIcon className="w-8 h-8 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">Progreso Personalizado</h3>
+                <h3 className="text-xl font-semibold mb-3">Plan de Mejora Personalizado</h3>
                 <p className="text-gray-600">
                   Monitorea tu avance con métricas, historial y recomendaciones personalizadas.
                 </p>
               </div>
 
-              <div className="text-center p-6">
-                <div className="bg-primary-light/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircleIcon className="w-8 h-8 text-primary" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3">Lista Personalizada</h3>
-                <p className="text-gray-600">
-                  Crea tu propia lista de problemas según nivel, tema o empresa objetivo.
-                </p>
-              </div>
             </div>
           </div>
         </section>
@@ -162,73 +153,12 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Testimonials Section */}
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Lo que dicen nuestros usuarios
-              </h2>
-              <p className="text-xl text-gray-600">
-                Historias reales de éxito de desarrolladores que transformaron su preparación
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-lg shadow-md">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold">
-                    L
-                  </div>
-                  <div className="ml-4">
-                    <h4 className="font-semibold text-gray-900">Laura Méndez</h4>
-                    <p className="text-gray-600 text-sm">Backend Developer en Amazon</p>
-                  </div>
-                </div>
-                <p className="text-gray-700 italic">
-                  "Las simulaciones se sentían como entrevistas reales. Gracias a eso, logré una oferta en Amazon."
-                </p>
-              </div>
-
-              <div className="bg-white p-8 rounded-lg shadow-md">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold">
-                    D
-                  </div>
-                  <div className="ml-4">
-                    <h4 className="font-semibold text-gray-900">Diego Torres</h4>
-                    <p className="text-gray-600 text-sm">Software Engineer en Google</p>
-                  </div>
-                </div>
-                <p className="text-gray-700 italic">
-                  "El feedback de la IA me ayudó a mejorar mi comunicación técnica en semanas."
-                </p>
-              </div>
-
-              <div className="bg-white p-8 rounded-lg shadow-md">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold">
-                    S
-                  </div>
-                  <div className="ml-4">
-                    <h4 className="font-semibold text-gray-900">Sofía Ramírez</h4>
-                    <p className="text-gray-600 text-sm">Full Stack Developer en Microsoft</p>
-                  </div>
-                </div>
-                <p className="text-gray-700 italic">
-                  "Pude identificar mis debilidades y convertirlas en fortalezas antes de mis entrevistas."
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Video Demo Section */}
         <section id="demo" className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Mira TuCoach AI en acción
+                Mira Interview Mentor en acción
               </h2>
               <p className="text-xl text-gray-600">
                 Descubre cómo nuestra IA te ayuda a prepararte para el éxito
@@ -236,7 +166,7 @@ const LandingPage = () => {
             </div>
 
             <VideoDemo 
-              title="TuCoach AI - Demo de Entrevista Simulada"
+              title="Interview Mentor - Demo de Entrevista Simulada"
               videoUrl="https://interviewmentor.training/static/promo_video.mp4"
               // thumbnailUrl="URL_DE_THUMBNAIL_OPCIONAL"
             />
@@ -251,7 +181,7 @@ const LandingPage = () => {
                 Preguntas Frecuentes
               </h2>
               <p className="text-xl text-gray-600">
-                Resolvemos tus dudas sobre TuCoach AI
+                Resolvemos tus dudas sobre Interview Mentor
               </p>
             </div>
 
@@ -271,15 +201,6 @@ const LandingPage = () => {
                 </h3>
                 <p className="text-gray-600">
                   Las preguntas son diseñadas por expertos y validadas con ejemplos reales de entrevistas en empresas top como Google, Meta y Amazon.
-                </p>
-              </div>
-
-              <div className="border-b border-gray-200 pb-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  ¿Cuánto cuesta usar el simulador?
-                </h3>
-                <p className="text-gray-600">
-                  Ofrecemos un plan gratuito con funciones básicas. Los planes premium incluyen feedback avanzado y seguimiento personalizado.
                 </p>
               </div>
 
@@ -311,7 +232,7 @@ const LandingPage = () => {
               Únete a la Lista de Espera
             </h2>
             <p className="text-xl mb-8 opacity-90">
-              Sé de los primeros en acceder a TuCoach AI y llevar tu preparación de entrevistas al siguiente nivel
+              Sé de los primeros en acceder a Interview Mentor y llevar tu preparación de entrevistas al siguiente nivel
             </p>
             
             <WaitlistForm />
@@ -322,7 +243,7 @@ const LandingPage = () => {
         <footer className="bg-gray-900 text-white py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h3 className="text-2xl font-bold mb-4">TuCoach AI</h3>
+              <h3 className="text-2xl font-bold mb-4">Interview Mentor</h3>
               <p className="text-gray-400 mb-6">
                 Tu entrenador de entrevistas con IA
               </p>
@@ -338,7 +259,7 @@ const LandingPage = () => {
                 </a>
               </div>
               <div className="mt-8 pt-8 border-t border-gray-800 text-gray-400 text-sm">
-                © 2024 TuCoach AI. Todos los derechos reservados.
+                © 2024 Interview Mentor. Todos los derechos reservados.
               </div>
             </div>
           </div>
