@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PlayCircleIcon } from '@heroicons/react/24/outline';
 
-const VideoDemo = ({ videoUrl, thumbnailUrl, title = "TuCoach AI Demo" }) => {
+const VideoDemo = ({ videoUrl, thumbnailUrl, title = "Interview Mentor AI Demo" }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const handlePlay = () => {
@@ -93,7 +93,7 @@ const VideoDemo = ({ videoUrl, thumbnailUrl, title = "TuCoach AI Demo" }) => {
           {title}
         </h3>
         <p className="text-gray-600">
-          Descubre cómo TuCoach AI puede ayudarte a perfeccionar tus habilidades de entrevista
+          Descubre cómo Interview Mentor AI puede ayudarte a perfeccionar tus habilidades de entrevista
         </p>
       </div>
     </div>

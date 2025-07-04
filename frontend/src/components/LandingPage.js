@@ -26,11 +26,12 @@ const LandingPage = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4">
               <div className="flex items-center">
-                <h1 className="text-2xl font-bold text-white">Interview Mentor</h1>
+                <img src="/logo_transparent.png" alt="Interview Mentor" className="h-8 w-auto" />
+                <h1 className="text-2xl font-bold text-white ml-3">Interview Mentor</h1>
               </div>
               <div className="hidden md:flex space-x-8">
-                <a href="#como-funciona" className="text-gray-300 hover:text-accent transition-colors">¿Cómo funciona?</a>
                 <a href="#beneficios" className="text-gray-300 hover:text-accent transition-colors">Beneficios</a>
+                <a href="#como-funciona" className="text-gray-300 hover:text-accent transition-colors">¿Cómo funciona?</a>
                 <a href="#demo" className="text-gray-300 hover:text-accent transition-colors">Demo</a>
                 <a href="#lista-espera" className="bg-accent text-white px-4 py-2 rounded-md hover:bg-accent-dark transition-colors">Únete</a>
               </div>
@@ -61,7 +62,7 @@ const LandingPage = () => {
         </section>
 
         {/* Benefits Section */}
-        <section className="py-20 bg-white">
+        <section id="beneficios" className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-green mb-4">
@@ -200,7 +201,7 @@ const LandingPage = () => {
                   ¿Qué tan buenas son las preguntas del simulador?
                 </h3>
                 <p className="text-gray-300">
-                  Las preguntas son diseñadas por expertos y validadas con ejemplos reales de entrevistas en empresas top como Google, Meta y Amazon.
+                  Las preguntas son diseñadas por expertos y validadas con ejemplos reales de entrevistas en empresas top.
                 </p>
               </div>
 
@@ -210,15 +211,6 @@ const LandingPage = () => {
                 </h3>
                 <p className="text-gray-300">
                   Sí, el simulador está disponible vía web y funciona en computadoras, tabletas y móviles sin necesidad de instalación.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-xl font-bold text-white mb-3">
-                  ¿Qué tipo de soporte ofrecen si tengo problemas?
-                </h3>
-                <p className="text-gray-300">
-                  Contamos con soporte por chat y correo 24/7, además de una base de ayuda con respuestas rápidas y tutoriales.
                 </p>
               </div>
             </div>
