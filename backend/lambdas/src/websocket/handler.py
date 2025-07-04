@@ -20,7 +20,7 @@ logger.setLevel(logging.INFO)
 dynamodb = boto3.resource("dynamodb")
 connections_table = dynamodb.Table(os.environ.get("DYNAMODB_TABLE", "TuCoachAi-prod"))
 
-AI_MODEL = "google/gemini-2.5-pro-preview-03-25"
+AI_MODEL = "google/gemini-2.5-flash-preview-05-20"
 OPENROUTER_SECRET_NAME = os.getenv("OPENROUTER_SECRET_NAME", "/interviews/openrouter-key")
 openrouter_api_key = get_ssm_parameter(OPENROUTER_SECRET_NAME)
 
@@ -41,7 +41,7 @@ You are a senior software engineer that is performing a mock interview for a can
 - Mandatory topics: data structures, object oriented programming,java, spring framework,sql
 
 ## Interview structure
-- The interview duration most be 12 minutes.
+- The interview duration must be 12 minutes.
 - The answers must be short, 3 sentences at most.
 - Start by asking 1 question about the candidate's background and experience.
 - For each mandatory  topic, ask questions progressively.
@@ -52,6 +52,7 @@ You are a senior software engineer that is performing a mock interview for a can
   - If there are dependencies between topics, skip related topics.
 - After all mandatory topics, continue with optional skills if time allows.
 - At the end, present a summary to the candidate with your final assessment and all feedback and recommendations.
+- Include link to courses and books that may help the candidate with the topics.
 
 ## Guidelines
 - Ask only one question at a time.
