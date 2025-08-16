@@ -8,6 +8,7 @@ This is the frontend application for TuCoach AI, a platform that provides AI-pow
 - Modern UI with Tailwind CSS
 - WebSocket communication with backend
 - Responsive design
+- Google Analytics 4 integration for user tracking
 
 ## Getting Started
 
@@ -69,8 +70,26 @@ This will create a `build` directory with optimized production files.
 The application uses environment variables for configuration:
 
 - `REACT_APP_WEBSOCKET_URL`: The WebSocket URL for connecting to the backend
+- `REACT_APP_CLERK_PUBLISHABLE_KEY`: The publishable key for Clerk authentication
+- `REACT_APP_GA4_MEASUREMENT_ID`: The Measurement ID for Google Analytics 4
 
 For local development, these are set in `.env.development`. For production, they are set in `.env.production`.
+
+## Google Analytics 4 Integration
+
+The application includes GA4 integration to track user interactions and campaign performance:
+
+- **Page Views**: Automatically tracked on route changes
+- **UTM Parameters**: Automatically captured on first page load (`utm_source`, `utm_medium`, `utm_campaign`, `utm_content`)
+- **Custom Events**: Track user interactions like button clicks and form submissions
+- **Enhanced Measurement**: Enabled for better tracking of scrolls, downloads, and video engagement
+
+### Testing Analytics
+
+To test UTM parameter tracking:
+1. Access the app with UTM parameters: `http://localhost:3000/?utm_source=test&utm_medium=cpc&utm_campaign=summer_sale`
+2. Check browser developer tools > Network tab for requests to `google-analytics.com`
+3. Verify in GA4 Realtime reports
 
 ## WebSocket Communication
 
@@ -103,6 +122,7 @@ Responses from the server will have the following format:
   - `components/`: React components
   - `hooks/`: Custom React hooks
   - `context/`: React context providers
+  - `utils/`: Utility functions including analytics
   - `App.js`: Main application component
   - `index.js`: Application entry point
 

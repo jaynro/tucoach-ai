@@ -21,6 +21,34 @@
     <meta name="twitter:description" content="Practica entrevistas técnicas con IA especializada para recién graduados mexicanos" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- Google Analytics 4 Global Site Tag -->
+    <script>
+      // Only load GA4 if measurement ID is provided and not a placeholder
+      if (typeof window !== 'undefined' && '%REACT_APP_GA4_MEASUREMENT_ID%' && '%REACT_APP_GA4_MEASUREMENT_ID%' !== 'G-XXXXXXXXXX') {
+        (function() {
+          var script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://www.googletagmanager.com/gtag/js?id=%REACT_APP_GA4_MEASUREMENT_ID%';
+          document.head.appendChild(script);
+          
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          
+          // Configure GA4 with enhanced UTM tracking
+          gtag('config', '%REACT_APP_GA4_MEASUREMENT_ID%', {
+            // Enable enhanced measurement for better tracking
+            enhanced_measurement: true,
+            // Track UTM parameters automatically
+            campaign_content: true,
+            // Enable debug mode in development
+            debug_mode: '%NODE_ENV%' === 'development'
+          });
+        })();
+      }
+    </script>
+    
     <title>TuCoach AI - Tu Entrenador de Entrevistas con IA</title>
   </head>
   <body>

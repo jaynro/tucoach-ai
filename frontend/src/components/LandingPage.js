@@ -4,8 +4,21 @@ import { Link } from 'react-router-dom';
 import { CheckCircleIcon, UserGroupIcon, AcademicCapIcon, ChartBarIcon } from '@heroicons/react/24/outline';
 import WaitlistForm from './WaitlistForm';
 import VideoDemo from './VideoDemo';
+import { trackEvent } from '../utils/analytics';
 
 const LandingPage = () => {
+  const handleWaitlistClick = () => {
+    trackEvent('engagement', 'click', 'hero-waitlist-button');
+  };
+
+  const handleDemoClick = () => {
+    trackEvent('engagement', 'click', 'hero-demo-button');
+  };
+
+  const handleNavWaitlistClick = () => {
+    trackEvent('engagement', 'click', 'nav-waitlist-button');
+  };
+
   return (
     <>
       <Helmet>
@@ -33,7 +46,7 @@ const LandingPage = () => {
                 <a href="#beneficios" className="text-gray-300 hover:text-accent transition-colors">Beneficios</a>
                 <a href="#como-funciona" className="text-gray-300 hover:text-accent transition-colors">¿Cómo funciona?</a>
                 <a href="#demo" className="text-gray-300 hover:text-accent transition-colors">Demo</a>
-                <a href="#lista-espera" className="bg-accent text-white px-4 py-2 rounded-md hover:bg-accent-dark transition-colors">Únete</a>
+                <a href="#lista-espera" onClick={handleNavWaitlistClick} className="bg-accent text-white px-4 py-2 rounded-md hover:bg-accent-dark transition-colors">Únete</a>
               </div>
             </div>
           </div>
@@ -50,10 +63,10 @@ const LandingPage = () => {
                 Practica simulaciones realistas, recibe feedback instantáneo y análisis personalizado para maximizar tu confianza.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#lista-espera" className="bg-accent text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-accent-dark transition-colors">
+                <a href="#lista-espera" onClick={handleWaitlistClick} className="bg-accent text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-accent-dark transition-colors">
                   Únete a la lista de espera
                 </a>
-                <a href="#demo" className="border-2 border-accent text-accent px-8 py-4 rounded-lg text-lg font-semibold hover:bg-accent hover:text-white transition-colors">
+                <a href="#demo" onClick={handleDemoClick} className="border-2 border-accent text-accent px-8 py-4 rounded-lg text-lg font-semibold hover:bg-accent hover:text-white transition-colors">
                   Ver Demo
                 </a>
               </div>
