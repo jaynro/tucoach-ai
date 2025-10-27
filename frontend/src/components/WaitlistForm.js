@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { SignUp, useUser } from '@clerk/clerk-react';
+import { CheckCircleIcon } from '@heroicons/react/24/outline';
 
 const WaitlistForm = () => {
   const [email, setEmail] = useState('');
@@ -39,9 +40,7 @@ const WaitlistForm = () => {
     return (
       <div className="bg-white rounded-lg p-8 max-w-md mx-auto text-center">
         <div className="text-green-600 mb-4">
-          <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-          </svg>
+          <CheckCircleIcon className="w-16 h-16 mx-auto" />
         </div>
         <h3 className="text-xl font-semibold text-gray-900 mb-2">
           ¡Bienvenido a la lista de espera!
@@ -61,9 +60,7 @@ const WaitlistForm = () => {
     return (
       <div className="bg-white rounded-lg p-8 max-w-md mx-auto text-center">
         <div className="text-green-600 mb-4">
-          <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-          </svg>
+          <CheckCircleIcon className="w-16 h-16 mx-auto" />
         </div>
         <h3 className="text-xl font-semibold text-gray-900 mb-2">
           ¡Bienvenido a la lista de espera!
@@ -154,25 +151,54 @@ const WaitlistForm = () => {
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            Correo electrónico
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-gray-900 bg-white placeholder-gray-500"
-            placeholder="tu@email.com"
-          />
+        <div className="grid md:grid-cols-4 gap-3">
+          <div className="md:col-span-1">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              Nombre
+            </label>
+            <input
+              type="text"
+              id="name"
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-gray-900 bg-white placeholder-gray-500"
+              placeholder="Nombre"
+            />
+          </div>
+          
+          <div className="md:col-span-2">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Correo electrónico
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-gray-900 bg-white placeholder-gray-500"
+              placeholder="tu@email.com"
+            />
+          </div>
+
+          <div className="md:col-span-1">
+            <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+              Rol
+            </label>
+            <select
+              id="role"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-gray-900 bg-white"
+            >
+              <option value="backend">Backend</option>
+              <option value="frontend">Frontend</option>
+              <option value="devops">DevOps</option>
+            </select>
+          </div>
         </div>
 
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-primary text-white py-3 px-4 rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed font-medium"
+          className="w-full bg-accent text-white py-3 px-4 rounded-md hover:bg-accent-dark focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed font-semibold"
         >
           {isLoading ? (
             <div className="flex items-center justify-center">
@@ -180,14 +206,13 @@ const WaitlistForm = () => {
               Registrando...
             </div>
           ) : (
-            'Únete a la Lista de Espera'
+            'Unirme a la lista de espera'
           )}
         </button>
       </form>
 
-      <p className="text-xs text-gray-500 text-center mt-4">
-        Al registrarte, aceptas recibir actualizaciones sobre TuCoach AI. 
-        Nunca compartiremos tu información.
+      <p className="text-xs text-gray-400 text-center mt-4">
+        Al registrarte aceptas recibir correos relacionados con la beta. Puedes darte de baja en cualquier momento.
       </p>
 
       {hasClerkKey && (
