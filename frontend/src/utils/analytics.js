@@ -98,4 +98,20 @@ export const trackAiTurnUsage = ({
  * @param {string} conversionLabel - The conversion label from Google Ads (e.g., 'abc123def456')
  * @param {Object} options - Optional conversion parameters
  * @param {number} options.value - The conversion value
- * @param {string} options.currency - The currency
+ * @param {string} options.currency - The currency code (e.g., 'USD', 'MXN')
+ * @param {string} options.transactionId - Unique transaction identifier
+ */
+export const trackAdsConversion = (conversionLabel, options = {}) => {
+  if (typeof window === 'undefined' || typeof window.gtag !== 'function') {
+    console.warn('Google Ads tracking not available');
+    return;
+  }
+
+  const conversionConfig = {
+    send_to: `AW-17681750680/${conversionLabel}`,
+    ...options
+  };
+
+  window.gtag('event', 'conversion', conversionConfig);
+  console.log('Google Ads conversion tracked:', conversionLabel, options);
+};
